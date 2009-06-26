@@ -1,0 +1,13 @@
+bitclust/
+db-1_8_7/
+db-1_9_1/
+readme.html
+refe-1_8_7
+refe-1_8_7.cmd
+refe-1_9_1
+refe-1_9_1.cmd
+server.exe
+server.exy
+server.rb
+*.swp
+*~
