@@ -1,0 +1,34 @@
+#class_entries {
+  before: {
+    dict = @class_paths
+  }
+}
+
+#module_entries {
+  before: {
+    dict = @module_paths
+  }
+}
+
+#exception_entries {
+  before: {
+    dict = @exception_paths
+  }
+}
+
+
+#class_entries, #module_entries, #exception_entries {
+  logic: {
+    dict.keys.sort_by {|klass| klass.name }.each do |klass|
+      filepath = dict[klass]
+      _stag()
+      _cont()
+      _etag()
+    end
+  }
+}
+
+#class_link, #module_link, #exception_link {
+  Value: klass.name;
+  attrs: 'href' filepath;
+}

@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="ja">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <title>Ruby Reference Manual</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <style type="text/css">
+    <!--
+      -->
+    </style>
+    <script language="JavaScript" type="text/javascript" src="js/jQuery.js"></script>
+    <script language="JavaScript" type="text/javascript">
+    <!--
+      -->
+    </script>
+  </head>
+
+  <body>
+
+    <div class="section">
+      <h2>Classes</h2>
+      <table class="list">
+        <tbody>
+<%     dict = @class_paths %>
+<%     dict.keys.sort_by {|klass| klass.name }.each do |klass| %>
+<%       filepath = dict[klass] %>
+          <tr>
+            <td class="klass">class</td>
+            <td><a href="<%= filepath %>"><%== klass.name %></a></td>
+          </tr>
+<%     end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Modules</h2>
+      <table class="list">
+        <tbody>
+<%     dict = @module_paths %>
+<%     dict.keys.sort_by {|klass| klass.name }.each do |klass| %>
+<%       filepath = dict[klass] %>
+          <tr>
+            <td class="module">module</td>
+            <td><a href="<%= filepath %>"><%== klass.name %></a></td>
+          </tr>
+<%     end %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Exception</h2>
+      <table class="list">
+        <tbody>
+<%     dict = @exception_paths %>
+<%     dict.keys.sort_by {|klass| klass.name }.each do |klass| %>
+<%       filepath = dict[klass] %>
+          <tr>
+            <td class="exception">class</td>
+            <td><a href="<%= filepath %>"><%== klass.name %></a></td>
+          </tr>
+<%     end %>
+        </tbody>
+      </table>
+    </div>
+
+  </body>
+
+</html>
