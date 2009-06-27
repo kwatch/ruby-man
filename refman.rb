@@ -195,24 +195,27 @@ class Builder
   def load_method_entries(class_entry)
     s = class_entry.name.gsub(/[A-Z]/) { "-#{$&.downcase}" }
     dir = "#{$methods_dir}/#{s.gsub(/::/, '=')}"
-    method_names = []
+    method_names = {}
     File.open("#{dir}/=index") do |f|
       f.each_line do |line|
         method_name, method_name_with_class = line.chomp.split(/\t/)
-        class_name = method_name_with_class.split(/[.\#]/, 2).first
+        class_name, alias_name = method_name_with_class.split(/(?=[.\#])/, 2)
         if class_name == class_entry.name
-          method_names << method_name
+          method_names[method_name] = alias_name
         end
       end
     end
     entries = []
-    method_names.each do |method_name|
-      s = method_name.gsub(/[A-Z]/) { "-#{$&.downcase}" }
-      s = s.gsub(/^[.\#]/) { $& == '.' ? 's.' : 'i.' }
+    prefix = {'.'=>'s.', '#'=>'i.', '.#'=>'m.'}
+    method_names.each do |method_name, alias_name|
+      s = alias_name
+      s = s.gsub(/^[.\#]+/) { prefix[$&] }
       s = s.gsub(/[^.\w]/) { '=' + $&[0].to_s(16) }
+      s = s.gsub(/[A-Z]/) { "-#{$&.downcase}" }
       filepath = "#{dir}/#{s}._builtin"
       unless File.exist?(filepath)
-        #report_error("#{filepath}: not found. (#{method_name})")
+        ! Dir.glob("#{dir}/#{s}.*").empty?  or
+          report_error("#{filepath}: not found. (#{method_name})")
         next
       end
       entry = MethodEntry.new.load_file(filepath)

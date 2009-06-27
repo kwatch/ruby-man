@@ -76,3 +76,8 @@ tr.ancestor_header th {
 	padding: 20px 5px 5px 5px;
 }
 
+
+a.close-button {
+	font-style: italic;
+	font-size: 80%;
+}

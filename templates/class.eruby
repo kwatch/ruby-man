@@ -41,7 +41,7 @@
             <td class="content" colspan="2">
               <div>
                 <pre><%== entry.content %></pre>
-                <a href="javascript:undefined" onclick="hide_method_content(this);return false">close</a>
+                <a href="javascript:undefined" onclick="hide_method_content(this);return false" class="close-button">close</a>
               </div>
             </td>
           </tr>
