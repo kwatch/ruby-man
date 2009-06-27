@@ -34,25 +34,6 @@ def encode_name(name)
 end
 
 
-## list of classes
-#Dir.glob(File.join($classes_dir, "*")).each do |path|
-#  entry = File.basename(path)
-#  next if entry == '=index'
-#  classname = decode_path(entry)
-#  puts classname
-#end
-
-def load_datafile(filepath)
-  str = File.read(filepath)
-  header, content = str.split(/\n\n/, 2)
-  entry = {}
-  header.each_line do |line|
-    key, val = line.strip.split(/=/, 2)
-    entry[key.intern] = val
-  end
-  entry[:content] = content
-  return entry
-end
 
 def get_class(name)
   obj = Object
@@ -60,73 +41,103 @@ def get_class(name)
   return obj
 end
 
-def class_url(class_name)
-  class_name.gsub(/::/, '--') + '.html'
-end
-
 def report_error(msg)
   #$stderr.puts "*** #{msg}"
   warn "*** #{msg}"
 end
 
-class_entries = {}
-module_entries = {}
-exception_entries = {}
-object_entries = {}
-File.open(File.join($classes_dir, "=index")) do |f|
-  f.each_line do |line|
-    ## datafile path
-    entry_name, class_name = line.strip.split(/\t/, 2)
-    filename = entry_name.gsub(/[A-Z]/) { "-#{$&.downcase}" }.gsub(/::/, '=')
-    filepath = "#{$classes_dir}/#{filename}"
-    unless File.exist?(filepath)
-      report_error "#{filepath}: not found (#{class_name})"
-      next
+
+class Entry
+
+  attr_accessor :type, :library, :superclass, :extended, :included
+  attr_accessor :content, :name, :filepath, :url, :desc, :klass
+
+  def load_file(filepath)
+    str = File.read(filepath)
+    header, content = str.split(/\n\n/, 2)
+    entry = self
+    header.each_line do |line|
+      key, val = line.strip.split(/=/, 2)
+      self.__send__("#{key}=", val)
     end
-    ## load datafile
-    entry = load_datafile(filepath)
-    if entry[:library] == '_builtin'
-      next if class_name.start_with?('Errno::') && class_name != 'Errno::EXXX'
-      next if class_name == "fatal"
+    self.content = content
+    return self
+  end
+
+  def desc
+    return @desc ||= @content.to_s.split(/\n\n/, 2).first.gsub(/\n/, '')
+  end
+
+  def url
+    return @url ||= @name.gsub(/::/, '--') + '.html'
+  end
+
+end
+
+
+class Builder
+
+  def build_index
+    ## get entries
+    entries = []
+    File.open(File.join($classes_dir, "=index")) do |f|
+      f.each_line do |line|
+        ## datafile path
+        entry_name, class_name = line.strip.split(/\t/, 2)
+        filename = entry_name.gsub(/[A-Z]/) { "-#{$&.downcase}" }.gsub(/::/, '=')
+        filepath = "#{$classes_dir}/#{filename}"
+        unless File.exist?(filepath)
+          report_error "#{filepath}: not found (#{class_name})"
+          next
+        end
+        ## load datafile
+        entry = Entry.new.load_file(filepath)
+        entry.name = class_name
+        entry.filepath = filepath
+        ## select only built-in class
+        entries << entry if entry.library == '_builtin'
+      end
+    end
+    ## classify entries
+    class_entries = {}
+    module_entries = {}
+    exception_entries = {}
+    object_entries = {}
+    entries.each do |entry|
+      next if entry.name.start_with?('Errno::') && entry.name != 'Errno::EXXX'
+      next if entry.name == "fatal"
       begin
-        klass = get_class(class_name)
-        dict = entry[:type] == 'object' ? object_entries    : \
-               klass <= Exception       ? exception_entries : \
-               klass.class == Class     ? class_entries     : module_entries
+        klass = get_class(entry.name)
+        dict = entry.type == 'object' ? object_entries    : \
+               klass <= Exception     ? exception_entries : \
+               klass.class == Class   ? class_entries     : module_entries
       rescue NameError => ex   # when class_name == "Errno::EXXX"
         klass = nil
         dict = exception_entries
       end
-      entry[:klass] = klass
-      entry[:name] = class_name
-      entry[:filepath] = filepath
-      entry[:url] = class_url(class_name)
-      desc = entry[:content].to_s.split(/\n\n/, 2).first.gsub(/\n/, '')
-      entry[:desc] = desc
-      dict[class_name] = entry
+      entry.klass = klass
+      dict[entry.name] = entry
     end
+    ## render html
+    context = {
+      :class_entries     => class_entries,
+      :module_entries    => module_entries,
+      :exception_entries => exception_entries,
+    }
+    html = render("templates/classes.eruby", context)
+    return html
   end
+
+  def render(template_filepath, context)
+    require 'erubis'
+    eruby = Erubis::Eruby.new(File.read(template_filepath))
+    return eruby.evaluate(context)
+  end
+
 end
 
 
-require 'erubis'
-template_filename = "templates/classes.eruby"
-eruby = Erubis::Eruby.new(File.read(template_filename))
-context = {
-  :class_entries     => class_entries,
-  :module_entries    => module_entries,
-  :exception_entries => exception_entries,
-}
-print eruby.evaluate(context)
-
-
-## method list of String class
-#classname = 'String'
-#dir = File.join($methods_dir, encode_name(classname))
-#p dir
-#Dir.glob(File.join(dir, '*')).each do |path|
-#  entry = File.basename(path)
-#  methodname = decode_path(entry)
-#  puts methodname
-#end
+if __FILE__ == $0
+  print Builder.new.build_index
+end
 

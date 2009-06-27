@@ -35,11 +35,11 @@
 }
 
 #class_link, #module_link, #exception_link {
-  Value: entry[:name];
-  //attrs: 'href' entry[:filepath];
-  attrs: 'href' entry[:url];
+  Value: entry.name;
+  //attrs: 'href' entry.filepath;
+  attrs: 'href' entry.url;
 }
 
 #class_desc, #module_desc, #exception_desc {
-  Value: entry[:desc];
+  Value: entry.desc;
 }

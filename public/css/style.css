@@ -3,6 +3,16 @@
 	padding: 0;
 }
 
+div.section {
+	margin: 10px 20px;
+}
+
+div.section h2 {
+	margin-top: 30px;
+	margin-bottom: 10px;
+
+}
+
 table.list tr.odd {
 	background: #FFEEEE;
 }
@@ -19,7 +29,12 @@ table.list td.klass,
 table.list td.module,
 table.list td.exception {
 	width: 50px;
+	color: #666666;
 }
 table.list td.name {
 	width: 180px;
+	/*font-size: 120%;*/
+}
+table.list td.desc {
+	font-size: 90%;
 }
