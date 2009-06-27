@@ -229,7 +229,7 @@ class Builder
       :module_entries    => module_entries,
       :exception_entries => exception_entries,
     }
-    html = render("templates/classes.eruby", context)
+    html = render("templates/index.eruby", context)
     return html
   end
 
