@@ -41,3 +41,15 @@ function _toggle_method_content(tr) {
   }
 }
 
+
+/**
+ *  open method content automatically if url has '#hash' part
+ */
+$(document).ready(function() {
+    var hash = document.location.hash;
+    if (hash) {
+      var name = hash.substring(1);
+      //$("a[name='"+name+"']").get(0).onclick();
+      $("a[name='"+name+"']").trigger('click');
+    }
+ });
