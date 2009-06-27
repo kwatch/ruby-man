@@ -8,6 +8,7 @@
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
     <script language="JavaScript" type="text/javascript" src="js/jquery.js"></script>
+    <script language="JavaScript" type="text/javascript" src="js/jquery-ui.js"></script>
     <script language="JavaScript" type="text/javascript" src="js/util.js"></script>
   </head>
 
@@ -47,6 +48,9 @@
 <%     end %>
         </tbody>
       </table>
+<%     if @class_entry.children.empty? %>
+      <p class="empty">(None)</p>
+<%     end %>
     </div>
 
     <div class="section">
@@ -73,6 +77,9 @@
         </tbody>
 <%     end %>
       </table>
+<%     if @class_entry.ancestors.empty? %>
+      <p class="empty">(None)</p>
+<%     end %>
     </div>
 
   </body>

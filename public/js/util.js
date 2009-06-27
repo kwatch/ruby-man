@@ -50,6 +50,10 @@ $(document).ready(function() {
     if (hash) {
       var name = hash.substring(1);
       //$("a[name='"+name+"']").get(0).onclick();
-      $("a[name='"+name+"']").trigger('click');
+      var anchor = $("a[name='"+name+"']");
+      if (anchor.size()) {
+        anchor.parents('tr').effect('highlight', {}, 1000);
+        anchor.trigger('click');
+      }
     }
  });

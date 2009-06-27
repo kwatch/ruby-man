@@ -35,6 +35,14 @@
   }
 }
 
+#method_entries_empty {
+  logic: {
+    if @class_entry.children.empty?
+      _elem()
+    end
+  }
+}
+
 #method_entry {
   attrs: 'class' classattr;
 }
@@ -59,6 +67,14 @@
   logic: {
     i = 0
     @class_entry.ancestors.each do |ancestor_entry|
+      _elem()
+    end
+  }
+}
+
+#ancestor_entries_empty {
+  logic: {
+    if @class_entry.ancestors.empty?
       _elem()
     end
   }
@@ -93,4 +109,5 @@
 #ancestor_method_desc {
   Value: ancestor_method_entry.short_desc;
 }
+
 
