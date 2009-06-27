@@ -41,40 +41,76 @@ end
 #  classname = decode_path(entry)
 #  puts classname
 #end
+
+def load_datafile(filepath)
+  str = File.read(filepath)
+  header, content = str.split(/\n\n/, 2)
+  entry = {}
+  header.each_line do |line|
+    key, val = line.strip.split(/=/, 2)
+    entry[key.intern] = val
+  end
+  entry[:content] = content
+  return entry
+end
+
+def get_class(name)
+  obj = Object
+  name.split(/::/).each {|s| obj = obj.const_get(s) }
+  return obj
+end
+
+def report_error(msg)
+  #$stderr.puts "*** #{msg}"
+  warn "*** #{msg}"
+end
+
 class_entries = {}
+module_entries = {}
+exception_entries = {}
+object_entries = {}
 File.open(File.join($classes_dir, "=index")) do |f|
   f.each_line do |line|
+    ## datafile path
     entry_name, class_name = line.strip.split(/\t/, 2)
-    class_entries[class_name] = entry_name
+    filename = entry_name.gsub(/[A-Z]/) { "-#{$&.downcase}" }.gsub(/::/, '=')
+    filepath = "#{$classes_dir}/#{filename}"
+    unless File.exist?(filepath)
+      report_error "#{filepath}: not found (#{class_name})"
+      next
+    end
+    ## load datafile
+    entry = load_datafile(filepath)
+    if entry[:library] == '_builtin'
+      next if class_name.start_with?('Errno::') && class_name != 'Errno::EXXX'
+      next if class_name == "fatal"
+      begin
+        klass = get_class(class_name)
+        dict = entry[:type] == 'object' ? object_entries    : \
+               klass <= Exception       ? exception_entries : \
+               klass.class == Class     ? class_entries     : module_entries
+      rescue NameError => ex   # when class_name == "Errno::EXXX"
+        klass = nil
+        dict = exception_entries
+      end
+      entry[:klass] = klass
+      entry[:name] = class_name
+      entry[:filepath] = filepath
+      desc = entry[:content].to_s.split(/\n\n/, 2).first.gsub(/\n/, '')
+      entry[:desc] = desc
+      dict[class_name] = entry
+    end
   end
 end
 
-class_paths = {}
-module_paths = {}
-exception_paths = {}
-builtin_classes.each do |class_name, klass|
-  entry_name = class_entries[klass.name]
-  if entry_name.nil?
-    $stderr.puts "*** error: entry name is not found for #{klass.name} class"
-  else
-    #path = "#{$classes_dir}/#{encode_name(entry_name)}"
-    filename = entry_name.gsub(/[A-Z]/) { "-#{$&.downcase}" }.gsub(/::/, '=')
-    filepath = "#{$classes_dir}/#{filename}"
-    File.file?(filepath)  or raise "#{filepath}: not found (for #{entry_name})."
-    #puts "#{klass.name}\t#{filepath}"
-    dict = klass <= Exception   ? exception_paths : \
-           klass.class == Class ? class_paths     : module_paths
-    dict[klass] = filepath
-  end
-end
 
 require 'erubis'
 template_filename = "templates/classes.eruby"
 eruby = Erubis::Eruby.new(File.read(template_filename))
 context = {
-  :class_paths     => class_paths,
-  :module_paths    => module_paths,
-  :exception_paths => exception_paths,
+  :class_entries     => class_entries,
+  :module_entries    => module_entries,
+  :exception_entries => exception_entries,
 }
 print eruby.evaluate(context)
 

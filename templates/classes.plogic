@@ -1,26 +1,26 @@
 #class_entries {
   before: {
-    dict = @class_paths
+    dict = @class_entries
   }
 }
 
 #module_entries {
   before: {
-    dict = @module_paths
+    dict = @module_entries
   }
 }
 
 #exception_entries {
   before: {
-    dict = @exception_paths
+    dict = @exception_entries
   }
 }
 
 
 #class_entries, #module_entries, #exception_entries {
   logic: {
-    dict.keys.sort_by {|klass| klass.name }.each do |klass|
-      filepath = dict[klass]
+    dict.keys.sort.each do |class_name|
+      entry = dict[class_name]
       _stag()
       _cont()
       _etag()
@@ -29,6 +29,10 @@
 }
 
 #class_link, #module_link, #exception_link {
-  Value: klass.name;
-  attrs: 'href' filepath;
+  Value: entry[:name];
+  attrs: 'href' entry[:filepath];
+}
+
+#class_desc, #module_desc, #exception_desc {
+  Value: entry[:desc];
 }
