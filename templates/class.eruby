@@ -14,8 +14,15 @@
 
   <body>
 
+    <div class="header">
+      <h1><a href="index.html">Ruby Reference Manual</a></h1>
+    </div>
+    <div class="spacer">
+      <br />
+    </div>
+
     <div class="section">
-      <h1><span class="class_type"><%== @class_entry.type %></span> <span class="class_name"><%== @class_entry.name %></span></h1>
+      <h2><span class="class_type"><%== @class_entry.type %></span> <span class="class_name"><%== @class_entry.name %></span></h2>
     </div>
 
 <%     class_desc, class_content = @class_entry.content.split(/\n\n/, 2) %>
@@ -26,7 +33,7 @@
     </div>
 
     <div class="section">
-      <h2>Methods</h2>
+      <h3>Methods</h3>
       <table class="list">
         <tbody>
 <%     i = 0 %>
@@ -54,7 +61,7 @@
     </div>
 
     <div class="section">
-      <h2>Inherited Methods</h2>
+      <h3>Inherited Methods</h3>
       <table class="list">
 <%     i = 0 %>
 <%     @class_entry.ancestors.each do |ancestor_entry| %>
