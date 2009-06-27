@@ -1,4 +1,8 @@
 
+#class_type {
+  Value: @class_entry.type;
+}
+
 #class_name {
   Value: @class_entry.name;
 }
@@ -19,18 +23,10 @@
 }
 
 #method_entries {
-  before: {
-    base_entry = @class_entry
-    entries = @class_entry.children
-  }
-}
-
-#method_entries {
   logic: {
     _stag()
     i = 0
-    entries.keys.sort.each do |name|
-      entry = entries[name]
+    @class_entry.children.each do |entry|
       i += 1
       classattr = i.odd? ? 'odd' : 'even'
       _cont()
@@ -51,9 +47,50 @@
 }
 
 #method_desc {
-  Value: entry.desc.gsub(/\[\[[a-z]:([.\#:\w]+)\]\]/, '\1');
+  Value: entry.desc;
 }
 
 #method_content {
   Value: entry.content;
 }
+
+
+#ancestor_entries {
+  logic: {
+    i = 0
+    @class_entry.ancestors.each do |ancestor_entry|
+      _elem()
+    end
+  }
+}
+
+#ancestor_type {
+  Value: ancestor_entry.type;
+}
+
+#ancestor_link {
+  Value: ancestor_entry.name;
+  attrs: 'href' "../#{ancestor_entry.url}";
+}
+
+#ancestor_methods {
+  attrs: 'class' classattr;
+  logic: {
+    #i = 0
+    ancestor_entry.children.each do |ancestor_method_entry|
+      i += 1
+      classattr = i.odd? ? 'odd' : 'even'
+      _elem()
+    end
+  }
+}
+
+#ancestor_method_link {
+  Value: ancestor_method_entry.name;
+  attrs: 'href' "../#{ancestor_entry.url}##{ancestor_method_entry.url}";
+}
+
+#ancestor_method_desc {
+  Value: ancestor_method_entry.short_desc;
+}
+

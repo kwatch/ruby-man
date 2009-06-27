@@ -3,14 +3,34 @@
 	padding: 0;
 }
 
+body {
+	background: #FFF;
+	color: #000;
+	font-size: 14px;
+	font-family: verdana,sans-serif;
+	padding: 0px 20px;
+}
+
+h1 {
+	font-size: 36px;
+}
+
+h2 {
+	font-size: 22px;
+}
+
+span.class_type {
+	font-size: 14px;
+	font-style: italic;
+}
+
 div.section {
-	margin: 10px 20px;
+	margin: 10px 0px;
 }
 
 div.section h2 {
 	margin-top: 30px;
 	margin-bottom: 10px;
-
 }
 
 table.list tr.odd {
@@ -23,6 +43,8 @@ table.list tr.even {
 
 table.list td {
 	padding: 5px;
+	text-align: left;
+	vertical-align: top;
 }
 
 table.list td.klass,
@@ -36,7 +58,6 @@ table.list td.name {
 	/*font-size: 120%;*/
 }
 table.list td.desc {
-	font-size: 90%;
 }
 table.list td a.important {
 	font-size: 150%;
@@ -44,5 +65,14 @@ table.list td a.important {
 
 
 #class_description {
-	font-size: 90%;
 }
+
+tr.ancestor_header {
+	background: #CCCCCC;
+}
+
+tr.ancestor_header th {
+	text-align: left;
+	padding: 20px 5px 5px 5px;
+}
+

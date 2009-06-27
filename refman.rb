@@ -47,8 +47,23 @@ def report_error(msg)
   warn "*** #{msg}"
 end
 
+def str_jleft(str, len)
+  ## required $KCODE
+  return "" if len <= 0
+  s = str[0, len]
+  s[-1, 1] = '' unless s =~ /.\z/
+  return s
+end
 
-require 'cgi'
+$KCODE = 'euc-jp'
+
+def url_escape(str)
+  return str.gsub(/([^ a-zA-Z0-9_.-]+)/n) {
+    '%' + $1.unpack('H2' * $1.size).join('%').upcase
+  }.tr(' ', '+')
+end
+  
+
 
 
 class Entry
@@ -84,12 +99,25 @@ class Entry
     return @rank >= 3
   end
 
+  def short_desc(len=80)
+    unless @short_desc
+      desc = self.desc.to_s.gsub(/\[\[\w:(.*?)\]\]/, '\1')
+      @short_desc = desc.length <= len ? desc : str_jleft(desc, len-3) + '...'
+    end
+    return @short_desc
+  end
+
+  def _trim_desc(desc)
+    return desc.gsub(/\n/, '').gsub(/\[\[[a-z]:(.*?)\]\]/, '\1')
+  end
+ 
 end
 
 
 class ClassEntry < Entry
 
-  attr_accessor :children
+  attr_accessor :extended, :included
+  attr_accessor :children, :ancestors
 
   def url
     return @url ||= (@name.nil? ? nil : @name.gsub(/::/, '--') + '.html')
@@ -100,7 +128,7 @@ class ClassEntry < Entry
     #@content.to_s =~ /\n\n/
     content = @content.to_s
     pos = content.index(/\n\n/)
-    return (pos ? content[0..pos] : content).gsub(/\n/, '')
+    return _trim_desc(pos ? content[0..pos] : content)
   end
 
 end
@@ -112,13 +140,13 @@ class MethodEntry < Entry
 
   def url
     name = @name[0] == ?# ? @name[1..-1] : @name
-    return "##{CGI.escape(name)}"
+    return "##{url_escape(name)}"
   end
 
   def desc
     #return @content.to_s.split(/\n\n/, 3)[1].gsub(/\n/, '')
     @content.to_s =~ /\n\n(.*?)\n\n/m
-    return $1.to_s.gsub(/\n/, '')
+    return _trim_desc($1.to_s)
   end
 
 end
@@ -164,12 +192,6 @@ class Builder
     return entries
   end
 
-  def load_method_entries!(class_entry)
-    entries = load_method_entries(class_entry)
-    class_entry.children = entries
-    return entries
-  end
-
   def load_method_entries(class_entry)
     s = class_entry.name.gsub(/[A-Z]/) { "-#{$&.downcase}" }
     dir = "#{$methods_dir}/#{s.gsub(/::/, '=')}"
@@ -183,7 +205,7 @@ class Builder
         end
       end
     end
-    entries = {}
+    entries = []
     method_names.each do |method_name|
       s = method_name.gsub(/[A-Z]/) { "-#{$&.downcase}" }
       s = s.gsub(/^[.\#]/) { $& == '.' ? 's.' : 'i.' }
@@ -196,8 +218,10 @@ class Builder
       entry = MethodEntry.new.load_file(filepath)
       entry.name = method_name
       entry.parent = class_entry
-      entries[method_name] = entry
+      #entries[method_name] = entry
+      entries << entry
     end
+    entries = entries.sort_by {|ent| ent.name }
     #class_entry.children = entries
     return entries
   end
@@ -244,7 +268,12 @@ class Builder
     entries = load_class_entries()
     html = build_index(entries)
     File.open("#{basedir}/index.html", 'w') {|f| f.write(html) }
+    %w[String Enumerable Comparable Object].each do |class_name|
+      class_entry = entries[class_name]
+      class_entry.children ||= load_method_entries(class_entry)
+    end
     class_entry = entries['String']
+    class_entry.ancestors = entries.values_at('Enumerable', 'Comparable', 'Object')
     html = build_class_html(class_entry)
     filename = "#{basedir}/#{class_entry.name.gsub(/::/, '--')}.html" 
     File.open(filename, 'w') {|f| f.write(html) }

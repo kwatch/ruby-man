@@ -13,7 +13,9 @@
 
   <body>
 
-    <h1><%== @class_entry.name %></h1>
+    <div class="section">
+      <h1><span class="class_type"><%== @class_entry.type %></span> <span class="class_name"><%== @class_entry.name %></span></h1>
+    </div>
 
 <%     class_desc, class_content = @class_entry.content.split(/\n\n/, 2) %>
     <div class="section" id="class_description">
@@ -25,17 +27,14 @@
     <div class="section">
       <h2>Methods</h2>
       <table class="list">
-<%     base_entry = @class_entry %>
-<%     entries = @class_entry.children %>
         <tbody>
 <%     i = 0 %>
-<%     entries.keys.sort.each do |name| %>
-<%       entry = entries[name] %>
+<%     @class_entry.children.each do |entry| %>
 <%       i += 1 %>
 <%       classattr = i.odd? ? 'odd' : 'even' %>
           <tr class="<%= classattr %>">
             <td class="name"><a href="<%= entry.url %>" name="<%= entry.url[1..-1] %>" onclick="toggle_method_content(this);return false"<%= entry.important? ? 'class="important"' : '' %>><%== entry.name %></a></td>
-            <td class="desc"><%== entry.desc.gsub(/\[\[[a-z]:([.\#:\w]+)\]\]/, '\1') %></td>
+            <td class="desc"><%== entry.desc %></td>
           </tr>
           <tr style="display:none">
             <td class="content" colspan="2">
@@ -47,6 +46,32 @@
           </tr>
 <%     end %>
         </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Inherited Methods</h2>
+      <table class="list">
+<%     i = 0 %>
+<%     @class_entry.ancestors.each do |ancestor_entry| %>
+        <tbody class="ancestor_entries">
+          <tr class="ancestor_header">
+            <th colspan="2">
+              <span><%== ancestor_entry.type %></span>
+              <a class="ancestor_link" href="<%= "../#{ancestor_entry.url}" %>"><%== ancestor_entry.name %></a>
+            </th>
+          </tr>
+<%     #i = 0 %>
+<%     ancestor_entry.children.each do |ancestor_method_entry| %>
+<%       i += 1 %>
+<%       classattr = i.odd? ? 'odd' : 'even' %>
+          <tr class="<%= classattr %>">
+            <td class="ancestor_method_name"><a href="<%= "../#{ancestor_entry.url}##{ancestor_method_entry.url}" %>"><%== ancestor_method_entry.name %></a></td>
+            <td class="ancestor_method_desc"><%== ancestor_method_entry.short_desc %></td>
+          </tr>
+<%     end %>
+        </tbody>
+<%     end %>
       </table>
     </div>
 
