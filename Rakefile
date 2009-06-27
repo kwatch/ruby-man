@@ -1,5 +1,5 @@
 
-task :all => [:templates]
+task :all => [:index, :templates]
 
 task :templates => ["templates/classes.eruby"]
 
@@ -7,7 +7,7 @@ rule ".eruby" => [".html", ".plogic"] do |t|
   sh "kwartz -l erubis -p #{t.sources[1]} #{t.sources[0]} > #{t.name}"
 end
 
-index_html = "refman/index.html"
+index_html = "public/index.html"
 
 task :index => [:remove_index, index_html]
 

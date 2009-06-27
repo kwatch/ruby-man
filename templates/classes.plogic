@@ -1,16 +1,19 @@
 #class_entries {
+  attrs: 'class' classattr;
   before: {
     dict = @class_entries
   }
 }
 
 #module_entries {
+  attrs: 'class' classattr;
   before: {
     dict = @module_entries
   }
 }
 
 #exception_entries {
+  attrs: 'class' classattr;
   before: {
     dict = @exception_entries
   }
@@ -19,7 +22,10 @@
 
 #class_entries, #module_entries, #exception_entries {
   logic: {
+    i = 0
     dict.keys.sort.each do |class_name|
+      i += 1
+      classattr = i.odd? ? 'odd' : 'even'
       entry = dict[class_name]
       _stag()
       _cont()
@@ -30,7 +36,8 @@
 
 #class_link, #module_link, #exception_link {
   Value: entry[:name];
-  attrs: 'href' entry[:filepath];
+  //attrs: 'href' entry[:filepath];
+  attrs: 'href' entry[:url];
 }
 
 #class_desc, #module_desc, #exception_desc {

@@ -60,6 +60,10 @@ def get_class(name)
   return obj
 end
 
+def class_url(class_name)
+  class_name.gsub(/::/, '--') + '.html'
+end
+
 def report_error(msg)
   #$stderr.puts "*** #{msg}"
   warn "*** #{msg}"
@@ -96,6 +100,7 @@ File.open(File.join($classes_dir, "=index")) do |f|
       entry[:klass] = klass
       entry[:name] = class_name
       entry[:filepath] = filepath
+      entry[:url] = class_url(class_name)
       desc = entry[:content].to_s.split(/\n\n/, 2).first.gsub(/\n/, '')
       entry[:desc] = desc
       dict[class_name] = entry

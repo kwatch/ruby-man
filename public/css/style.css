@@ -1,0 +1,25 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+table.list tr.odd {
+	background: #FFEEEE;
+}
+
+table.list tr.even {
+	background: #EEEEFF;
+}
+
+table.list td {
+	padding: 5px;
+}
+
+table.list td.klass,
+table.list td.module,
+table.list td.exception {
+	width: 50px;
+}
+table.list td.name {
+	width: 180px;
+}

@@ -25,12 +25,15 @@
       <table class="list">
         <tbody>
 <%     dict = @class_entries %>
+<%     i = 0 %>
 <%     dict.keys.sort.each do |class_name| %>
+<%       i += 1 %>
+<%       classattr = i.odd? ? 'odd' : 'even' %>
 <%       entry = dict[class_name] %>
-          <tr>
+          <tr class="<%= classattr %>">
             <td class="klass">class</td>
-            <td><a href="<%= entry[:filepath] %>"><%== entry[:name] %></a></td>
-            <td><%== entry[:desc] %></td>
+            <td class="name"><a href="<%= entry[:url] %>"><%== entry[:name] %></a></td>
+            <td class="desc"><%== entry[:desc] %></td>
           </tr>
 <%     end %>
         </tbody>
@@ -42,12 +45,15 @@
       <table class="list">
         <tbody>
 <%     dict = @module_entries %>
+<%     i = 0 %>
 <%     dict.keys.sort.each do |class_name| %>
+<%       i += 1 %>
+<%       classattr = i.odd? ? 'odd' : 'even' %>
 <%       entry = dict[class_name] %>
-          <tr>
+          <tr class="<%= classattr %>">
             <td class="module">module</td>
-            <td><a href="<%= entry[:filepath] %>"><%== entry[:name] %></a></td>
-            <td><%== entry[:desc] %></td>
+            <td class="name"><a href="<%= entry[:url] %>"><%== entry[:name] %></a></td>
+            <td class="desc"><%== entry[:desc] %></td>
           </tr>
 <%     end %>
         </tbody>
@@ -59,12 +65,15 @@
       <table class="list">
         <tbody>
 <%     dict = @exception_entries %>
+<%     i = 0 %>
 <%     dict.keys.sort.each do |class_name| %>
+<%       i += 1 %>
+<%       classattr = i.odd? ? 'odd' : 'even' %>
 <%       entry = dict[class_name] %>
-          <tr>
+          <tr class="<%= classattr %>">
             <td class="exception">class</td>
-            <td><a href="<%= entry[:filepath] %>"><%== entry[:name] %></a></td>
-            <td><%== entry[:desc] %></td>
+            <td class="name"><a href="<%= entry[:url] %>"><%== entry[:name] %></a></td>
+            <td class="desc"><%== entry[:desc] %></td>
           </tr>
 <%     end %>
         </tbody>
