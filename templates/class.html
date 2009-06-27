@@ -4,26 +4,21 @@
     <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP" />
     <meta http-equiv="Content-Style-Type" content="text/css" />
     <meta http-equiv="Content-Script-Type" content="text/javascript" />
-    <title id="mark:doctitle">Ruby Reference Manual</title>
+    <title id="mark:page_title">Ruby Reference Manual</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <style type="text/css">
-    <!--
-      -->
-    </style>
-    <script language="JavaScript" type="text/javascript" src="js/jQuery.js"></script>
-    <script language="JavaScript" type="text/javascript">
-    <!--
-      -->
-    </script>
+    <script language="JavaScript" type="text/javascript" src="js/jquery.js"></script>
+    <script language="JavaScript" type="text/javascript" src="js/util.js"></script>
   </head>
 
   <body>
 
     <h1 id="mark:class_name">Array</h1>
 
-    <div class="section">
-      <pre id="mark:class_content">...content...</pre>
+    <div class="section" id="class_description">
+      <pre id="mark:class_desc">...desc...</pre>
+      <a href="javascript:undefined" onclick="toggle_class_content(this, '#class_content');return false">more&raquo;</a>
+      <pre id="class_content" style="display:none">...content...</pre>
     </div>
 
     <div class="section">
@@ -31,12 +26,16 @@
       <table class="list">
         <tbody id="mark:method_entries">
           <tr class="odd" id="mark:method_entry">
-            <td class="type">i</td>
-            <td class="name"><a href="#" name="each" id="mark:method_link">#each</a></td>
+            <td class="name"><a href="#" name="each" id="mark:method_link" onclick="toggle_method_content(this);return false">#each</a></td>
             <td class="desc" id="mark:method_desc">...description...</td>
           </tr>
           <tr style="display:none">
-            <td class="content"><pre id="mark:method_content">...content...</pre></td>
+            <td class="content" colspan="2">
+              <div>
+                <pre id="mark:method_content">...content...</pre>
+                <a href="javascript:undefined" onclick="hide_method_content(this);return false">close</a>
+              </div>
+            </td>
           </tr>
           <tr class="even" id="dummy:d2">
             <td class="type">i</td>
@@ -45,7 +44,7 @@
             <td class="content" style="display:none"><pre>...content...</pre></td>
           </tr>
           <tr style="display:none" id="dummy:d3">
-            <td class="content"><pre>...content...</pre></td>
+            <td class="content" colspan="2"><pre>...content...</pre></td>
           </tr>
         </tbody>
       </table>

@@ -1,9 +1,21 @@
+
 #class_name {
   Value: @class_entry.name;
 }
 
+#class_description {
+  logic: {
+    class_desc, class_content = @class_entry.content.split(/\n\n/, 2)
+    _elem()
+  }
+}
+
+#class_desc {
+  Value: class_desc;
+}
+
 #class_content {
-  Value: @class_entry.content;
+  Value: class_content;
 }
 
 #method_entries {

@@ -7,23 +7,19 @@
     <title>Ruby Reference Manual</title>
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <style type="text/css">
-    <!--
-      -->
-    </style>
-    <script language="JavaScript" type="text/javascript" src="js/jQuery.js"></script>
-    <script language="JavaScript" type="text/javascript">
-    <!--
-      -->
-    </script>
+    <script language="JavaScript" type="text/javascript" src="js/jquery.js"></script>
+    <script language="JavaScript" type="text/javascript" src="js/util.js"></script>
   </head>
 
   <body>
 
     <h1><%== @class_entry.name %></h1>
 
-    <div class="section">
-      <pre><%== @class_entry.content %></pre>
+<%     class_desc, class_content = @class_entry.content.split(/\n\n/, 2) %>
+    <div class="section" id="class_description">
+      <pre><%== class_desc %></pre>
+      <a href="javascript:undefined" onclick="toggle_class_content(this, '#class_content');return false">more&raquo;</a>
+      <pre id="class_content" style="display:none"><%== class_content %></pre>
     </div>
 
     <div class="section">
@@ -38,12 +34,16 @@
 <%       i += 1 %>
 <%       classattr = i.odd? ? 'odd' : 'even' %>
           <tr class="<%= classattr %>">
-            <td class="type">i</td>
-            <td class="name"><a href="<%= entry.url %>" name="<%= entry.url[1..-1] %>"<%= entry.important? ? 'class="important"' : '' %>><%== entry.name %></a></td>
+            <td class="name"><a href="<%= entry.url %>" name="<%= entry.url[1..-1] %>" onclick="toggle_method_content(this);return false"<%= entry.important? ? 'class="important"' : '' %>><%== entry.name %></a></td>
             <td class="desc"><%== entry.desc.gsub(/\[\[[a-z]:([.\#:\w]+)\]\]/, '\1') %></td>
           </tr>
           <tr style="display:none">
-            <td class="content"><pre><%== entry.content %></pre></td>
+            <td class="content" colspan="2">
+              <div>
+                <pre><%== entry.content %></pre>
+                <a href="javascript:undefined" onclick="hide_method_content(this);return false">close</a>
+              </div>
+            </td>
           </tr>
 <%     end %>
         </tbody>

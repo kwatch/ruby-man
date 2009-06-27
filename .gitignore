@@ -11,3 +11,5 @@ server.exy
 server.rb
 *.swp
 *~
+tmp/
+error.log

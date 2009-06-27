@@ -41,3 +41,8 @@ table.list td.desc {
 table.list td a.important {
 	font-size: 150%;
 }
+
+
+#class_description {
+	font-size: 90%;
+}
