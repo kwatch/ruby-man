@@ -25,11 +25,11 @@
       <h2><span class="class_type"><%== @class_entry.type %></span> <span class="class_name"><%== @class_entry.name %></span></h2>
     </div>
 
-<%     class_desc, class_content = @class_entry.content.split(/\n\n/, 2) %>
+<%     class_desc, class_content = @class_entry.html_content.split(/\n\n/, 2) %>
     <div class="section" id="class_description">
-      <pre><%== class_desc %></pre>
+      <pre><%= class_desc %></pre>
       <a href="javascript:undefined" onclick="toggle_class_content(this, '#class_content');return false">more&raquo;</a>
-      <pre id="class_content" style="display:none"><%== class_content %></pre>
+      <pre id="class_content" style="display:none"><%= class_content %></pre>
     </div>
 
     <div class="section">
@@ -41,13 +41,13 @@
 <%       i += 1 %>
 <%       classattr = i.odd? ? 'odd' : 'even' %>
           <tr class="<%= classattr %>">
-            <td class="name"><a href="<%= entry.url %>" name="<%= entry.url[1..-1] %>" onclick="toggle_method_content(this);return false"<%= entry.important? ? 'class="important"' : '' %>><%== entry.name %></a></td>
+            <td class="name"><a name="<%= entry.url[1..-1] %>" class="method_anchor">.</a><a href="<%= entry.url %>" name="each" onclick="toggle_method_content(this);return false"<%= entry.important? ? 'class="important"' : '' %>><%== entry.name %></a></td>
             <td class="desc"><%== entry.desc %></td>
           </tr>
           <tr style="display:none">
             <td class="content" colspan="2">
               <div>
-                <pre><%== entry.content %></pre>
+                <pre><%= entry.html_content %></pre>
                 <a href="javascript:undefined" onclick="hide_method_content(this);return false" class="close-button">close</a>
               </div>
             </td>

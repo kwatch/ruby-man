@@ -53,7 +53,7 @@ $(document).ready(function() {
       var anchor = $("a[name='"+name+"']");
       if (anchor.size()) {
         anchor.parents('tr').effect('highlight', {}, 1000);
-        anchor.trigger('click');
+        anchor.next().trigger('click');
       }
     }
  });

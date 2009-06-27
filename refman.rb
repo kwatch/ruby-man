@@ -62,9 +62,39 @@ def url_escape(str)
     '%' + $1.unpack('H2' * $1.size).join('%').upcase
   }.tr(' ', '+')
 end
-  
 
+HTML_ESCAPE = {'&'=>'&amp;', '<'=>'&lt;', '>'=>'&gt;'}
+def html_escape(str)
+  return str.to_s.gsub(/[&<>]/) { HTML_ESCAPE[$&] }
+end
 
+def trim_link(str)
+  return str.to_s.gsub(/\[\[[a-z]:(.*?)\]\]/, '\1')
+end
+
+def text2html(text_str)
+  pos = 0
+  html = ''
+  text_str.scan(/\[\[(\w):(.*?)\]\]/) {
+    matched, indicator, label = $&, $1, $2
+    html << html_escape(text_str[pos...$~.begin(0)])
+    pos = $~.end(0)
+    if label =~ /\A([\w:]+)(?:(\.|\#|\.\#)(.*))?\z/
+      class_name, sep, method_name = $1, $2, $3
+      href = "#{class_name.gsub(/::/, '--')}.html"
+      ch = indicator == 's' ? '.' : ''
+      href << "##{ch}#{url_escape(method_name)}" if sep
+      html << %Q|<a href="#{href}">#{html_escape(label)}</a>|
+    else
+      #$stderr.puts "\033[0;31m*** debug: label=#{label.inspect}\033[0m"
+      html << matched
+    end
+  }
+  rest = pos == 0 ? text_str : text_str[pos..-1]
+  html << html_escape(rest)
+  return html
+end
+ 
 
 class Entry
 
@@ -101,14 +131,14 @@ class Entry
 
   def short_desc(len=80)
     unless @short_desc
-      desc = self.desc.to_s.gsub(/\[\[\w:(.*?)\]\]/, '\1')
+      desc = trim_link(self.desc)
       @short_desc = desc.length <= len ? desc : str_jleft(desc, len-3) + '...'
     end
     return @short_desc
   end
 
-  def _trim_desc(desc)
-    return desc.gsub(/\n/, '').gsub(/\[\[[a-z]:(.*?)\]\]/, '\1')
+  def html_content
+    return text2html(@content)
   end
  
 end
@@ -128,7 +158,7 @@ class ClassEntry < Entry
     #@content.to_s =~ /\n\n/
     content = @content.to_s
     pos = content.index(/\n\n/)
-    return _trim_desc(pos ? content[0..pos] : content)
+    return trim_link(pos ? content[0..pos] : content)
   end
 
 end
@@ -146,7 +176,7 @@ class MethodEntry < Entry
   def desc
     #return @content.to_s.split(/\n\n/, 3)[1].gsub(/\n/, '')
     @content.to_s =~ /\n\n(.*?)\n\n/m
-    return _trim_desc($1.to_s)
+    return trim_link($1.to_s)
   end
 
 end

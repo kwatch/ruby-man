@@ -110,3 +110,9 @@ a.close-button {
 	font-style: italic;
 	font-size: 80%;
 }
+
+a.method_anchor {
+	position: relative;
+	top: -70px;
+	left: -100px;
+}

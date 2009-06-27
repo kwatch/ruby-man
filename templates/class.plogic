@@ -9,17 +9,17 @@
 
 #class_description {
   logic: {
-    class_desc, class_content = @class_entry.content.split(/\n\n/, 2)
+    class_desc, class_content = @class_entry.html_content.split(/\n\n/, 2)
     _elem()
   }
 }
 
 #class_desc {
-  Value: class_desc;
+  VALUE: class_desc;
 }
 
 #class_content {
-  Value: class_content;
+  VALUE: class_content;
 }
 
 #method_entries {
@@ -47,10 +47,13 @@
   attrs: 'class' classattr;
 }
 
+#method_anchor {
+  attrs: 'name' entry.url[1..-1];
+}
+
 #method_link {
   Value: entry.name;
-  attrs: 'href' entry.url,
-         'name' entry.url[1..-1];
+  attrs: 'href' entry.url;
   append: entry.important? ? 'class="important"' : '';
 }
 
@@ -59,7 +62,7 @@
 }
 
 #method_content {
-  Value: entry.content;
+  VALUE: entry.html_content;
 }
 
 
