@@ -205,11 +205,12 @@ class Builder
         end
       end
     end
-    entries = []
-    prefix = {'.'=>'s.', '#'=>'i.', '.#'=>'m.'}
+    entries = {}
+    prefixes = {'.'=>'s.', '#'=>'i.', '.#'=>'m.'}
     method_names.each do |method_name, alias_name|
+      prefix = nil
       s = alias_name
-      s = s.gsub(/^[.\#]+/) { prefix[$&] }
+      s = s.gsub(/^[.\#]+/) { prefix = prefixes[$&] }
       s = s.gsub(/[^.\w]/) { '=' + $&[0].to_s(16) }
       s = s.gsub(/[A-Z]/) { "-#{$&.downcase}" }
       filepath = "#{dir}/#{s}._builtin"
@@ -218,15 +219,15 @@ class Builder
           report_error("#{filepath}: not found. (#{method_name})")
         next
       end
+      method_name = method_name.sub(/^[.\#]/, '.#') if prefix == 'm.'
       entry = MethodEntry.new.load_file(filepath)
       entry.name = method_name
       entry.parent = class_entry
-      #entries[method_name] = entry
-      entries << entry
+      entries[method_name] = entry
+      #entries << entry
     end
-    entries = entries.sort_by {|ent| ent.name }
-    #class_entry.children = entries
-    return entries
+    entry_list = entries.keys.sort.collect {|key| entries[key] }
+    return entry_list
   end
 
   def build_index(entries)
