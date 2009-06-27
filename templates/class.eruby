@@ -58,7 +58,7 @@
           <tr class="ancestor_header">
             <th colspan="2">
               <span><%== ancestor_entry.type %></span>
-              <a class="ancestor_link" href="<%= "../#{ancestor_entry.url}" %>"><%== ancestor_entry.name %></a>
+              <a class="ancestor_link" href="<%= "#{ancestor_entry.url}" %>"><%== ancestor_entry.name %></a>
             </th>
           </tr>
 <%     #i = 0 %>
@@ -66,7 +66,7 @@
 <%       i += 1 %>
 <%       classattr = i.odd? ? 'odd' : 'even' %>
           <tr class="<%= classattr %>">
-            <td class="ancestor_method_name"><a href="<%= "../#{ancestor_entry.url}##{ancestor_method_entry.url}" %>"><%== ancestor_method_entry.name %></a></td>
+            <td class="ancestor_method_name"><a href="<%= "#{ancestor_entry.url}##{ancestor_method_entry.url}" %>"><%== ancestor_method_entry.name %></a></td>
             <td class="ancestor_method_desc"><%== ancestor_method_entry.short_desc %></td>
           </tr>
 <%     end %>

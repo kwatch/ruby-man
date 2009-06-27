@@ -268,15 +268,21 @@ class Builder
     entries = load_class_entries()
     html = build_index(entries)
     File.open("#{basedir}/index.html", 'w') {|f| f.write(html) }
-    %w[String Enumerable Comparable Object].each do |class_name|
-      class_entry = entries[class_name]
+    ##
+    entries.delete_if {|class_name, class_entry|
+      class_entry.klass.nil? || class_entry.type == 'object'
+    }
+    entries.each do |class_name, class_entry|
       class_entry.children ||= load_method_entries(class_entry)
+      ancestor_classes = class_entry.klass.ancestors[1..-1]
+      ancestor_classes.delete(Kernel)
+      class_entry.ancestors = ancestor_classes.collect {|klass| entries[klass.name] }
     end
-    class_entry = entries['String']
-    class_entry.ancestors = entries.values_at('Enumerable', 'Comparable', 'Object')
-    html = build_class_html(class_entry)
-    filename = "#{basedir}/#{class_entry.name.gsub(/::/, '--')}.html" 
-    File.open(filename, 'w') {|f| f.write(html) }
+    entries.each do |class_name, class_entry|
+      html = build_class_html(class_entry)
+      filename = "#{basedir}/#{class_entry.url}"
+      File.open(filename, 'w') {|f| f.write(html) }
+    end
   end
 
   def render(template_filepath, context)

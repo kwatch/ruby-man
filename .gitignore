@@ -13,3 +13,4 @@ server.rb
 *~
 tmp/
 error.log
+public/*.html
