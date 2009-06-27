@@ -32,8 +32,8 @@
 <%       entry = dict[class_name] %>
           <tr class="<%= classattr %>">
             <td class="klass">class</td>
-            <td class="name"><a href="<%= entry.url %>"><%== entry.name %></a></td>
-            <td class="desc"><%== entry.desc %></td>
+            <td class="name"><a href="<%= entry.url %>"<%= entry.important? ? 'class="important"' : '' %>><%== entry.name %></a></td>
+            <td class="desc"><%== entry.desc.gsub(/\[\[[a-z]:([.\#:\w]+)\]\]/, '\1') %></td>
           </tr>
 <%     end %>
         </tbody>
@@ -52,8 +52,8 @@
 <%       entry = dict[class_name] %>
           <tr class="<%= classattr %>">
             <td class="module">module</td>
-            <td class="name"><a href="<%= entry.url %>"><%== entry.name %></a></td>
-            <td class="desc"><%== entry.desc %></td>
+            <td class="name"><a href="<%= entry.url %>"<%= entry.important? ? 'class="important"' : '' %>><%== entry.name %></a></td>
+            <td class="desc"><%== entry.desc.gsub(/\[\[[a-z]:([.\#:\w]+)\]\]/, '\1') %></td>
           </tr>
 <%     end %>
         </tbody>
@@ -72,8 +72,8 @@
 <%       entry = dict[class_name] %>
           <tr class="<%= classattr %>">
             <td class="exception">class</td>
-            <td class="name"><a href="<%= entry.url %>"><%== entry.name %></a></td>
-            <td class="desc"><%== entry.desc %></td>
+            <td class="name"><a href="<%= entry.url %>"<%= entry.important? ? 'class="important"' : '' %>><%== entry.name %></a></td>
+            <td class="desc"><%== entry.desc.gsub(/\[\[[a-z]:([.\#:\w]+)\]\]/, '\1') %></td>
           </tr>
 <%     end %>
         </tbody>

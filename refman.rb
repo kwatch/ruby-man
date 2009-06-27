@@ -48,9 +48,13 @@ end
 
 
 class Entry
+  
+  def initialize
+    @rank = 1
+  end
 
   attr_accessor :type, :library, :superclass, :extended, :included
-  attr_accessor :content, :name, :filepath, :url, :desc, :klass
+  attr_accessor :content, :name, :filepath, :url, :desc, :klass, :rank
 
   def load_file(filepath)
     str = File.read(filepath)
@@ -72,10 +76,25 @@ class Entry
     return @url ||= @name.gsub(/::/, '--') + '.html'
   end
 
+  def important?
+    return @rank >= 3
+  end
+
 end
 
 
 class Builder
+
+  IMPORTANT_CLASSES = dict = {}
+  %w[
+    Object String Array Hash File Dir Struct Class Module Proc Range Regexp Symbol Time
+    Enumerable Kernel Math
+    Exception StandardError RuntimeError
+  ].each {|x| dict[x] = true }
+
+  def important?(name)
+    return IMPORTANT_CLASSES.key?(name)
+  end
 
   def build_index
     ## get entries
@@ -95,7 +114,10 @@ class Builder
         entry.name = class_name
         entry.filepath = filepath
         ## select only built-in class
-        entries << entry if entry.library == '_builtin'
+        if entry.library == '_builtin'
+          entry.rank = 3 if important?(class_name)
+          entries << entry
+        end
       end
     end
     ## classify entries

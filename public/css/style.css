@@ -38,3 +38,6 @@ table.list td.name {
 table.list td.desc {
 	font-size: 90%;
 }
+table.list td a.important {
+	font-size: 150%;
+}

@@ -38,8 +38,9 @@
   Value: entry.name;
   //attrs: 'href' entry.filepath;
   attrs: 'href' entry.url;
+  append: entry.important? ? 'class="important"' : '';
 }
 
 #class_desc, #module_desc, #exception_desc {
-  Value: entry.desc;
+  Value: entry.desc.gsub(/\[\[[a-z]:([.\#:\w]+)\]\]/, '\1');
 }
