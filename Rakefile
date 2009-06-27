@@ -1,7 +1,7 @@
 
-task :all => [:index, :templates]
+task :all => [:templates, :index]
 
-task :templates => ["templates/classes.eruby"]
+task :templates => ["templates/classes.eruby", "templates/class.eruby"]
 
 rule ".eruby" => [".html", ".plogic"] do |t|
   sh "kwartz -l erubis -p #{t.sources[1]} #{t.sources[0]} > #{t.name}"
@@ -17,8 +17,9 @@ end
 
 file index_html => ["refman.rb", "templates/classes.eruby"] do |t|
   mkdir_p File.dirname(t.name)
-  sh "ruby refman.rb > #{t.name}"
+  #sh "ruby refman.rb > #{t.name}"
   #sh "ruby refman.rb > #{t.name} 2> error.log"
+  sh "ruby refman.rb"
 end
 
 task :clear do |t|

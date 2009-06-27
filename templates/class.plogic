@@ -1,0 +1,47 @@
+#class_name {
+  Value: @class_entry.name;
+}
+
+#class_content {
+  Value: @class_entry.content;
+}
+
+#method_entries {
+  before: {
+    base_entry = @class_entry
+    entries = @class_entry.children
+  }
+}
+
+#method_entries {
+  logic: {
+    _stag()
+    i = 0
+    entries.keys.sort.each do |name|
+      entry = entries[name]
+      i += 1
+      classattr = i.odd? ? 'odd' : 'even'
+      _cont()
+    end
+    _etag()
+  }
+}
+
+#method_entry {
+  attrs: 'class' classattr;
+}
+
+#method_link {
+  Value: entry.name;
+  attrs: 'href' entry.url,
+         'name' entry.url[1..-1];
+  append: entry.important? ? 'class="important"' : '';
+}
+
+#method_desc {
+  Value: entry.desc.gsub(/\[\[[a-z]:([.\#:\w]+)\]\]/, '\1');
+}
+
+#method_content {
+  Value: entry.content;
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="ja">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <title>Ruby Reference Manual</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <style type="text/css">
+    <!--
+      -->
+    </style>
+    <script language="JavaScript" type="text/javascript" src="js/jQuery.js"></script>
+    <script language="JavaScript" type="text/javascript">
+    <!--
+      -->
+    </script>
+  </head>
+
+  <body>
+
+    <h1><%== @class_entry.name %></h1>
+
+    <div class="section">
+      <pre><%== @class_entry.content %></pre>
+    </div>
+
+    <div class="section">
+      <h2>Methods</h2>
+      <table class="list">
+<%     base_entry = @class_entry %>
+<%     entries = @class_entry.children %>
+        <tbody>
+<%     i = 0 %>
+<%     entries.keys.sort.each do |name| %>
+<%       entry = entries[name] %>
+<%       i += 1 %>
+<%       classattr = i.odd? ? 'odd' : 'even' %>
+          <tr class="<%= classattr %>">
+            <td class="type">i</td>
+            <td class="name"><a href="<%= entry.url %>" name="<%= entry.url[1..-1] %>"<%= entry.important? ? 'class="important"' : '' %>><%== entry.name %></a></td>
+            <td class="desc"><%== entry.desc.gsub(/\[\[[a-z]:([.\#:\w]+)\]\]/, '\1') %></td>
+          </tr>
+          <tr style="display:none">
+            <td class="content"><pre><%== entry.content %></pre></td>
+          </tr>
+<%     end %>
+        </tbody>
+      </table>
+    </div>
+
+  </body>
+
+</html>
