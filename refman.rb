@@ -86,7 +86,7 @@ def text2html(text_str)
       href << "##{ch}#{url_escape(method_name)}" if sep
       html << %Q|<a href="#{href}">#{html_escape(label)}</a>|
     else
-      #$stderr.puts "\033[0;31m*** debug: label=#{label.inspect}\033[0m"
+      #report_error("label=#{label.inspect}")
       html << matched
     end
   }
@@ -99,11 +99,11 @@ end
 class Entry
 
   def initialize
-    @rank = 1
+    @rating = 1
   end
 
   attr_accessor :type, :library, :superclass, :extended, :included
-  attr_accessor :content, :name, :filepath, :url, :desc, :klass, :rank
+  attr_accessor :content, :name, :filepath, :url, :desc, :klass, :rating
 
   def [](name)
     return self.instance_variable_get("@#{name}")
@@ -126,7 +126,7 @@ class Entry
   end
 
   def important?
-    return @rank >= 3
+    return @rating >= 3
   end
 
   def short_desc(len=80)
@@ -214,7 +214,7 @@ class Builder
         entry.filepath = filepath
         ## select only built-in class
         if entry.library == '_builtin'
-          entry.rank = 3 if important?(class_name)
+          entry.rating = 3 if important?(class_name)
           entries[class_name] = entry
         end
       end

@@ -22,6 +22,14 @@
   VALUE: class_content;
 }
 
+#class_content_wrapper {
+  logic: {
+    if not class_content.to_s.strip.empty?
+      _cont()
+    end
+  }
+}
+
 #method_entries {
   logic: {
     _stag()

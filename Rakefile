@@ -1,4 +1,6 @@
 
+task :default => [:all]
+
 task :all => [:templates, :index]
 
 task :templates => ["templates/index.eruby", "templates/class.eruby"]

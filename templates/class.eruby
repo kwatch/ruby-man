@@ -28,8 +28,10 @@
 <%     class_desc, class_content = @class_entry.html_content.split(/\n\n/, 2) %>
     <div class="section" id="class_description">
       <pre><%= class_desc %></pre>
+<%     if not class_content.to_s.strip.empty? %>
       <a href="javascript:undefined" onclick="toggle_class_content(this, '#class_content');return false">more&raquo;</a>
       <pre id="class_content" style="display:none"><%= class_content %></pre>
+<%     end %>
     </div>
 
     <div class="section">
