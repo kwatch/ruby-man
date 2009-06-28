@@ -7,28 +7,6 @@ end
 #p builtin_classes
 
 
-def decode_path(path)
-  s = path
-  s = s.gsub(/-([a-z])/) { $1.upcase }
-  s = s.gsub(/=(\d[a-f0-9])/) { $1.to_i(16).chr }
-  #s = s.gsub(/=21/, '!')
-  #s = s.gsub(/=3f/, '?')
-  #s = s.gsub(/=/, '::')
-  return s
-end
-
-def encode_name(name)
-  s = name
-  s = s.gsub(/([A-Z])/) { "-#{$1.downcase}" }
-  s = s.gsub(/[^-:\w]/) { $&[0].to_s(16) }
-  #s = s.gsub(/::/, "=")
-  #s = s.gsub(/\?/, "=3f")
-  #s = s.gsub(/\!/, "=21")
-  return s
-end
-
-
-
 def get_class(name)
   obj = Object
   name.split(/::/).each {|s| obj = obj.const_get(s) }
@@ -47,8 +25,6 @@ def str_jleft(str, len)
   s[-1, 1] = '' unless s =~ /.\z/
   return s
 end
-
-$KCODE = 'euc-jp'
 
 def url_escape(str)
   return str.gsub(/([^ a-zA-Z0-9_.-]+)/n) {
@@ -87,7 +63,7 @@ def text2html(text_str)
   html << html_escape(rest)
   return html
 end
- 
+
 
 class Entry
 
@@ -133,7 +109,7 @@ class Entry
   def html_content
     return text2html(@content)
   end
- 
+
 end
 
 
@@ -392,4 +368,3 @@ end
 if __FILE__ == $0
   Main.main
 end
-
