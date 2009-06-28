@@ -1,9 +1,27 @@
 
+#doc_title {
+  Value: 'Ruby Reference Manual : ' + @class_entry.name;
+}
+
+#navi_ruby_version {
+  Value: @ruby_version;
+}
+
+#navi_library_name {
+  Value: @library_name;
+}
+
+#navi_class_name {
+  Value: @class_entry.name;
+}
+
+
 #class_type {
   Value: @class_entry.type;
 }
 
 #class_name {
+  attrs: 'href' @class_entry.url;
   Value: @class_entry.name;
 }
 

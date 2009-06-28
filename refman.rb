@@ -6,13 +6,6 @@ ObjectSpace.each_object do |obj|
 end
 #p builtin_classes
 
-$basedir     = "db-1_8_7"   # or "#{Dir.pwd}/db-1_8_7"
-$classes_dir = "#{$basedir}/class"
-$methods_dir = "#{$basedir}/method"
-#$basedir = File.join(Dir.pwd, 'db-1_8_7')
-#$classes_dir = File.join($basedir, 'class')
-#$methods_dir = File.join($basedir, 'method')
-
 
 def decode_path(path)
   s = path
@@ -184,6 +177,13 @@ end
 
 class Builder
 
+  def initialize(ruby_version, datadir=nil, outdir=nil)
+    @ruby_version = ruby_version
+    @datadir = datadir || "db-#{ruby_version.gsub(/[-.]/, '_')}"
+    @outdir = outdir   || "public/#{ruby_version.gsub(/[-_]/, '.')}"
+  end
+  attr_accessor :ruby_version, :datadir, :outdir
+
   IMPORTANT_CLASSES = dict = {}
   %w[
     Object String Array Hash File Dir Struct Class Module Proc Range Regexp Symbol Time
@@ -198,12 +198,12 @@ class Builder
   def load_class_entries
     ## get entries
     entries = {}
-    File.open(File.join($classes_dir, "=index")) do |f|
+    File.open("#{@datadir}/class/=index") do |f|
       f.each_line do |line|
         ## datafile path
         entry_name, class_name = line.strip.split(/\t/, 2)
         filename = entry_name.gsub(/[A-Z]/) { "-#{$&.downcase}" }.gsub(/::/, '=')
-        filepath = "#{$classes_dir}/#{filename}"
+        filepath = "#{@datadir}/class/#{filename}"
         unless File.exist?(filepath)
           #report_error "#{filepath}: not found (#{class_name})"
           next
@@ -224,7 +224,7 @@ class Builder
 
   def load_method_entries(class_entry)
     s = class_entry.name.gsub(/[A-Z]/) { "-#{$&.downcase}" }
-    dir = "#{$methods_dir}/#{s.gsub(/::/, '=')}"
+    dir = "#{@datadir}/method/#{s.gsub(/::/, '=')}"
     method_names = {}
     File.open("#{dir}/=index") do |f|
       f.each_line do |line|
@@ -283,6 +283,8 @@ class Builder
     end
     ## render html
     context = {
+      :ruby_version => @ruby_version,
+      :library_name => 'builtin',
       :class_entries     => class_entries,
       :module_entries    => module_entries,
       :exception_entries => exception_entries,
@@ -293,14 +295,20 @@ class Builder
 
   def build_class_html(class_entry)
     class_entry.children ||= load_method_entries(class_entry)
-    context = {:class_entry => class_entry}
+    context = {
+      :ruby_version => @ruby_version,
+      :library_name => 'builtin',
+      :class_entry  => class_entry,
+    }
     html = render("templates/class.eruby", context)
     return html
   end
 
-  def build_all(basedir='public')
+  def build_all
     entries = load_class_entries()
     html = build_index(entries)
+    basedir = "#{@outdir}/builtin"
+    Dir.mkdir(basedir) unless File.exist?(basedir)
     File.open("#{basedir}/index.html", 'w') {|f| f.write(html) }
     ##
     entries.delete_if {|class_name, class_entry|
@@ -328,7 +336,60 @@ class Builder
 end
 
 
+class Main
+
+  def initialize(argv=ARGV, command=nil)
+    command ||= File.basename($0)
+    @argv = argv
+    @command = command
+  end
+
+  def parse_argv
+    require "optparse"
+    parser = OptionParser.new
+    options = {}
+    parser.on('-h', 'help') {|val| options['-h'] = val }
+    parser.on('-r ver', 'ruby version (1_8_7 or 1_9_1)') {|val| options['-r'] = val }
+    filenames = parser.parse(@argv)
+    if options['-h']
+      options['-h'] = parser.help
+    end
+    return options, filenames
+  end
+
+  def call
+    options, filenames = parse_argv()
+    if options['-h']
+      puts "Usage: #{@command} [-h] -r [1.8.7|1.9.1]"
+      puts options['-h'].sub(/\A.*?\n/, '')
+      return
+    end
+    errclass = OptionParser::InvalidOption
+    options['-r']  or raise errclass.new("'-r ruby-version' is required.")
+    ver = options['-r'].gsub(/[-_]/, '.')
+    datadir = "db-#{ver.gsub(/\./, '_')}"
+    outdir  = "public/#{ver}"
+    File.directory?(datadir)  or
+      raise errclass.new("-r #{options['-r']}: '#{datadir}' not found.")
+    File.directory?(outdir)  or
+      raise errclass.new("-r #{options['-r']}: '#{outdir}' not found.")
+    builder = Builder.new(ver, datadir, outdir)
+    builder.build_all
+  end
+
+  def self.main
+    begin
+      command = File.basename($0)
+      self.new(ARGV, command).call
+    rescue OptionParser::InvalidOption => ex
+      $stderr.puts "#{command}: #{ex.message}"
+    end
+  end
+
+end
+
+
 if __FILE__ == $0
-  Builder.new.build_all
+  Main.main
 end
 

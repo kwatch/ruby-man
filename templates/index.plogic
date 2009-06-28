@@ -1,3 +1,20 @@
+#doc_title {
+  Value: 'Ruby Reference Manual : ' + @library_name;
+}
+
+#navi_ruby_version {
+  Value: @ruby_version;
+}
+
+#navi_library_name {
+  Value: @library_name;
+}
+
+#library_name {
+  Value: @library_name;
+}
+
+
 #class_entries {
   attrs: 'class' classattr;
   before: {

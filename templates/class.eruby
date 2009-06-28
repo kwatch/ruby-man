@@ -4,25 +4,27 @@
     <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP" />
     <meta http-equiv="Content-Style-Type" content="text/css" />
     <meta http-equiv="Content-Script-Type" content="text/javascript" />
-    <title>Ruby Reference Manual</title>
+    <title><%== 'Ruby Reference Manual : ' + @class_entry.name %></title>
     <link rel="shortcut icon" href="favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <script language="JavaScript" type="text/javascript" src="js/jquery.js"></script>
-    <script language="JavaScript" type="text/javascript" src="js/jquery-ui.js"></script>
-    <script language="JavaScript" type="text/javascript" src="js/util.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css" />
+    <script language="JavaScript" type="text/javascript" src="../../js/jquery.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../js/jquery-ui.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../js/util.js"></script>
   </head>
 
   <body>
 
     <div class="header">
-      <h1><a href="index.html">Ruby Reference Manual</a></h1>
+      <div class="header-navi" style="" >
+        <a href="../../index.html">TOP</a> &raquo;
+        <a href="../index.html"><%== @ruby_version %></a> &raquo;
+        <a href="index.html"><%== @library_name %></a> &raquo;
+        <a href="Enumerable.html"><%== @class_entry.name %></a>
+      </div>
+      <h1><span class="header-target-type"><%== @class_entry.type %></span> <a href="<%= @class_entry.url %>"><%== @class_entry.name %></a></h1>
     </div>
     <div class="spacer">
       <br />
-    </div>
-
-    <div class="section">
-      <h2><span class="class_type"><%== @class_entry.type %></span> <span class="class_name"><%== @class_entry.name %></span></h2>
     </div>
 
 <%     class_desc, class_content = @class_entry.html_content.split(/\n\n/, 2) %>
@@ -50,6 +52,35 @@
             <td class="content" colspan="2">
               <div>
                 <pre><%= entry.html_content %></pre>
+                <a href="javascript:undefined" onclick="hide_method_content(this);return false" class="close-button">close</a>
+              </div>
+            </td>
+          </tr>
+          <tr style="display:none">
+            <td class="content" colspan="2">
+              <div>
+                <pre>例: 拡張子が '.html' である要素けを選ぶ
+
+  ## select() を使わない場合
+  arr = ['foo.html', 'bar.xhtml', 'baz.html']
+  result = []
+  arr.each {|x| result << x if x.end_with?('.html') }
+  p result
+  ## select() を使った場合
+  arr = ['foo.html', 'bar.xhtml', 'baz.html']
+  result = arr.select {|x| x.end_with?('.html') }
+  p result
+
+なお、正規表現に一致する要素だけを集めるなら、Enumerable#grep() を使うのがいいでしょう。
+
+select() の定義は次の通りです。
+
+  def select()
+    arr = []
+    each {|x| arr << x if yield(x) }
+    return arr
+  end
+</pre>
                 <a href="javascript:undefined" onclick="hide_method_content(this);return false" class="close-button">close</a>
               </div>
             </td>

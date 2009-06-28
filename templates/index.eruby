@@ -4,18 +4,23 @@
     <meta http-equiv="Content-Type" content="text/html; charset=EUC-JP" />
     <meta http-equiv="Content-Style-Type" content="text/css" />
     <meta http-equiv="Content-Script-Type" content="text/javascript" />
-    <title>Ruby Reference Manual</title>
+    <title><%== 'Ruby Reference Manual : ' + @library_name %></title>
     <link rel="shortcut icon" href="favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <script language="JavaScript" type="text/javascript" src="js/jquery.js"></script>
-    <script language="JavaScript" type="text/javascript" src="js/jquery-ui.js"></script>
-    <script language="JavaScript" type="text/javascript" src="js/util.js"></script>
+    <link rel="stylesheet" type="text/css" href="../../css/style.css" />
+    <script language="JavaScript" type="text/javascript" src="../../js/jquery.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../js/jquery-ui.js"></script>
+    <script language="JavaScript" type="text/javascript" src="../../js/util.js"></script>
   </head>
 
   <body>
 
     <div class="header">
-      <h1><a href="index.html">Ruby Reference Manual</a></h1>
+      <div class="header-navi" style="" >
+        <a href="../../index.html">TOP</a> &raquo;
+        <a href="../index.html"><%== @ruby_version %></a> &raquo;
+        <a href="index.html"><%== @library_name %></a>
+      </div>
+      <h1><span class="header-target-type">library</span> <a href="index.html"><%== @library_name %></a></h1>
     </div>
     <div class="spacer">
       <br />
